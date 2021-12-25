@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import ast
 import sklearn as sk
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -83,12 +84,34 @@ def featureScaling(X, a, b):
         Normalized_X[:, i] = ((X[:, i] - min(X[:, i])) / (max(X[:, i]) - min(X[:, i]))) * (b - a) + a
     return Normalized_X
 
+def split_dict(data):
+    f1 = []
+    f2 = []
+    f3 = []
+    for row in data['MiscFeature2']:
+        #     print(row)
+        splt = ast.literal_eval(row)
+        for key in splt.keys():
+            if (key == 'f1'):
+                f1.append(splt[key])
+            if (key == 'f2'):
+                f2.append(splt[key])
+            if (key == 'f3'):
+                f3.append(splt[key])
+    data['f1'] = pd.DataFrame(f1)
+    data['f2'] = pd.DataFrame(f2)
+    data['f3'] = pd.DataFrame(f3)
+    data.drop(columns=['MiscFeature2'], inplace=True)
+    return data
+
 def pre_processing(data):
     dropped_cols , data = drop_almost_null(data)
     data = FillNanInNumericColumns(data)
+    data = split_dict(data)
     data = EncodeStringColumns(data)
     features = data[data.columns[~data.isnull().any()]]
     data = PredictNullStrings(data, features)
+
     # Normalized_data = featureScaling(data, 0, 1)
     # print(Normalized_data.columns)
     return data
