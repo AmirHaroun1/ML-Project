@@ -4,8 +4,15 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 
 def Logistic_Reg(df) :
-    X = df[df.column != 'PriceRate']
+    X = df.drop(columns=['PriceRate'])
     Y = df['PriceRate']
+
+    # Features That Correlation is higher than average
+    corr = df.corr()
+    c_top_features = corr.index[abs(corr['PriceRate']) > 0.5]
+    c_top_features = c_top_features.delete(-1)
+    X = X.loc[:,c_top_features]
+
     x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.20, random_state=0)
 
     logisticRegr = LogisticRegression()
