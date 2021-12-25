@@ -1,5 +1,5 @@
 from pre_processing import *
-import pandas as pd
+import pickle
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.model_selection import train_test_split
@@ -15,18 +15,20 @@ def Dec_tree (df) :
 
     x_train,x_test,y_train,y_test=train_test_split(X,Y,test_size=0.2,random_state=0)
     bdt = AdaBoostClassifier(DecisionTreeClassifier(max_depth=10),algorithm="SAMME",n_estimators=200)
-    bdt.fit(x_train,y_train)
+
+    bdt = pickle.load(open('DecTree.sav', 'rb'))
+
 
     y_pred = bdt.predict(x_test)
     accuracy = np.mean(y_test==y_pred)
     # MSE
     MSE = metrics.mean_squared_error(y_test, y_pred)
-    print("MSE : ", MSE)
+    print("\tMSE : ", MSE)
 
     # r_2_score
     r_2_score = metrics.r2_score(y_test, y_pred)
-    print("r_2_score : ", r_2_score)
+    print("\tr_2_score : ", r_2_score)
 
     # Accuracy
     accuracy = np.mean(y_test == y_pred)
-    print("Accuracy : ", accuracy)
+    print("\tAccuracy : ", accuracy)
